@@ -1,6 +1,6 @@
-# HireHub - Job Portal
+# 🎯 HireHub - Job Portal
 
-A comprehensive job portal application built with the MERN stack (MongoDB, Express.js, React.js, Node.js) featuring role-based authentication, CRUD operations, and modern UI/UX.
+A modern, full-stack job portal built with the MERN stack (MongoDB, Express.js, React.js, Node.js) featuring role-based authentication, email verification, and advanced job search capabilities.
 
 ## 🚀 Quick Start
 
@@ -47,8 +47,10 @@ A comprehensive job portal application built with the MERN stack (MongoDB, Expre
    ```env
    PORT=5000
    MONGODB_URI=mongodb://localhost:27017/hirehub
-   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+   JWT_SECRET=your-super-secret-jwt-key
    NODE_ENV=development
+   EMAIL_USER=your-email@gmail.com
+   EMAIL_PASS=your-app-password
    ```
 
 4. **Start the server:**
@@ -81,48 +83,34 @@ A comprehensive job portal application built with the MERN stack (MongoDB, Expre
 
 ## ✨ Features
 
-### 🔐 Authentication & Authorization
-- **Role-based authentication** (Employer, Job Seeker, Admin)
-- JWT token-based authentication
-- Protected routes based on user roles
-- Secure password hashing with bcrypt
-
-### 👥 User Management
-- **Job Seekers**: Can browse jobs, apply, track applications, manage profile
-- **Employers**: Can post jobs, manage applications, view analytics
-- **Admins**: Full system access and user management
+### 🔐 Authentication & Security
+- **Role-based Authentication** (Job Seeker, Employer, Admin)
+- **Email Verification** with OTP
+- **Password Reset** functionality
+- **JWT Token** based authentication
+- **Protected Routes** based on user roles
 
 ### 💼 Job Management
-- **CRUD Operations** for job postings
-- Advanced search and filtering
-- Job application tracking
-- Salary range specifications
-- Job type and experience level categorization
+- **Post Jobs** (Employers)
+- **Browse Jobs** with advanced filters
+- **Apply for Jobs** (Job Seekers)
+- **Track Applications** with status updates
+- **Job Search** with multiple criteria
+- **Company Profiles** and job details
 
-### 🎯 Job Applications
-- Easy application submission
-- Application status tracking
-- Cover letter and resume upload
-- Employer application management
+### 👤 User Profiles
+- **Complete Profile Management**
+- **Resume Upload**
+- **Skills & Experience** tracking
+- **Application History**
+- **Dashboard** for different user types
 
-### 🔍 Search & Filtering
-- Text-based search across job titles, companies, descriptions
-- Location-based filtering
-- Job type filtering (Full-time, Part-time, Contract, etc.)
-- Experience level filtering
-- Salary range filtering
-- Sort by date, salary, etc.
-
-### 📊 Dashboard & Analytics
-- **Job Seeker Dashboard**: Applied jobs, saved jobs, profile views
-- **Employer Dashboard**: Posted jobs, applications, analytics
-- Real-time statistics and insights
-
-### 📱 Responsive Design
-- Modern, responsive UI built with CSS Grid and Flexbox
-- Mobile-first approach
-- Beautiful animations and transitions
-- Professional color scheme and typography
+### 🎨 Modern UI/UX
+- **Responsive Design** for all devices
+- **Modern UI** with Tailwind CSS
+- **Real-time Notifications**
+- **Loading States** and error handling
+- **Beautiful Email Templates**
 
 ## 🛠️ Tech Stack
 
@@ -132,8 +120,9 @@ A comprehensive job portal application built with the MERN stack (MongoDB, Expre
 - **MongoDB** - Database
 - **Mongoose** - ODM for MongoDB
 - **JWT** - Authentication
+- **Nodemailer** - Email Service
 - **bcryptjs** - Password hashing
-- **express-fileupload** - File upload handling
+- **Multer** - File upload
 - **helmet** - Security middleware
 - **cors** - Cross-origin resource sharing
 
@@ -145,6 +134,7 @@ A comprehensive job portal application built with the MERN stack (MongoDB, Expre
 - **React Hot Toast** - Notifications
 - **React Hook Form** - Form handling
 - **Date-fns** - Date utilities
+- **Tailwind CSS** - Styling
 
 ## 📁 Project Structure
 
@@ -195,9 +185,12 @@ HireHub/
 ## 🔌 API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/logout` - User logout
+- `POST /api/auth/register` - Register user
+- `POST /api/auth/login` - Login user
+- `POST /api/auth/verify-email` - Verify email with OTP
+- `POST /api/auth/resend-verification` - Resend verification email
+- `POST /api/auth/forgot-password` - Send password reset email
+- `POST /api/auth/reset-password` - Reset password with OTP
 
 ### Users
 - `GET /api/users/profile` - Get user profile
@@ -207,11 +200,11 @@ HireHub/
 - `POST /api/users/upload-resume` - Upload resume
 
 ### Jobs
-- `GET /api/jobs` - Get all jobs (with filters)
+- `GET /api/jobs` - Get all jobs
+- `POST /api/jobs` - Create job (Employer)
 - `GET /api/jobs/:id` - Get job by ID
-- `POST /api/jobs` - Create new job (employers only)
-- `PUT /api/jobs/:id` - Update job (owner/admin only)
-- `DELETE /api/jobs/:id` - Delete job (owner/admin only)
+- `PUT /api/jobs/:id` - Update job (Employer)
+- `DELETE /api/jobs/:id` - Delete job (Employer)
 - `POST /api/jobs/:id/apply` - Apply for job
 - `GET /api/jobs/employer/jobs` - Get employer's jobs
 - `PUT /api/jobs/application/status` - Update application status
