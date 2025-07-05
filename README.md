@@ -79,7 +79,6 @@ A modern, full-stack job portal built with the MERN stack (MongoDB, Express.js, 
 
 - **Frontend:** http://localhost:5173 (or similar port)
 - **Backend API:** http://localhost:5000
-- **API Health Check:** http://localhost:5000/api/health
 
 ## ✨ Features
 
@@ -248,11 +247,6 @@ HireHub/
    - Backend CORS is configured for development
    - Check if frontend is running on correct port
 
-### Error Messages
-
-- **"Missing parameter name"**: Route order issue (fixed)
-- **"ECONNREFUSED"**: Backend not running
-- **"Network Error"**: Check backend connection
 
 ## 🚀 Deployment
 
