@@ -26,7 +26,7 @@ app.use(morgan("dev"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload({
-  useTempFiles: true,
+    useTempFiles: true,
   tempFileDir: "/tmp/",
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 }));
@@ -38,15 +38,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/jobs", jobRoutes);
-
-// Health check route
-app.get("/api/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "HireHub API is running",
-    timestamp: new Date().toISOString()
-  });
-});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
