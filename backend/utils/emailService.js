@@ -4,7 +4,7 @@ import { emailTemplates } from './emailTemplates.js';
 
 // Create transporter
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: config.EMAIL_USER,
@@ -98,6 +98,27 @@ export const sendJobApplicationEmail = async (email, jobTitle, companyName, appl
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Error sending job application email:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Send daily job updates email
+export const sendDailyJobUpdates = async (email, userName, jobs) => {
+  try {
+    const transporter = createTransporter();
+    
+    const mailOptions = {
+      from: `"HireHub" <${config.EMAIL_USER}>`,
+      to: email,
+      subject: 'Daily Job Updates - HireHub',
+      html: emailTemplates.dailyJobUpdates(userName, jobs)
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Daily job updates email sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending daily job updates email:', error);
     return { success: false, error: error.message };
   }
 }; 

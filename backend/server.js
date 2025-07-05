@@ -15,6 +15,9 @@ import userRoutes from "./routes/userRoutes.js";
 // Import config
 import config from "./config.js";
 
+// Import email scheduler
+import { scheduleDailyJobUpdates } from "./utils/emailScheduler.js";
+
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -82,10 +85,14 @@ const startServer = async () => {
     
     await connectDB();
     
+    // Start email scheduler
+    scheduleDailyJobUpdates();
+    
     app.listen(PORT, () => {
       console.log(`🚀 HireHub Server running on port ${PORT}`);
       console.log(`📊 Environment: ${config.NODE_ENV}`);
       console.log(`🌐 API URL: http://localhost:${PORT}/api`);
+      console.log(`📧 Daily email updates scheduled for 9:00 AM UTC`);
     });
   } catch (error) {
     console.error("Error starting server:", error);

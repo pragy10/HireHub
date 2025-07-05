@@ -202,5 +202,76 @@ export const emailTemplates = {
       </div>
     </body>
     </html>
+  `,
+
+  // Daily job updates email
+  dailyJobUpdates: (userName, jobs) => `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Daily Job Updates - HireHub</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+        .job-card { background: #fff; border: 1px solid #ddd; padding: 20px; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .job-title { color: #667eea; font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+        .company-name { color: #666; font-weight: bold; }
+        .job-details { margin: 10px 0; }
+        .job-details span { background: #f0f0f0; padding: 4px 8px; border-radius: 4px; margin-right: 8px; font-size: 12px; }
+        .button { display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+        .stats { background: #fff; border: 1px solid #ddd; padding: 15px; margin: 20px 0; border-radius: 8px; text-align: center; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>📧 Daily Job Updates</h1>
+          <p>New opportunities waiting for you!</p>
+        </div>
+        <div class="content">
+          <h2>Hello ${userName}!</h2>
+          <p>Here are the latest job opportunities that match your profile. Don't miss out on these great positions!</p>
+          
+          <div class="stats">
+            <h3>📊 Today's Summary</h3>
+            <p><strong>${jobs.length}</strong> new jobs posted today</p>
+            <p>Based on your skills and preferences</p>
+          </div>
+          
+          ${jobs.map(job => `
+            <div class="job-card">
+              <div class="job-title">${job.title}</div>
+              <div class="company-name">${job.company}</div>
+              <div class="job-details">
+                <span>📍 ${job.location}</span>
+                <span>💰 ${job.salary}</span>
+                <span>⏰ ${job.jobType}</span>
+                <span>📅 ${job.experienceLevel}</span>
+              </div>
+              <p style="margin: 10px 0; color: #666;">${job.description.substring(0, 150)}...</p>
+              <a href="http://localhost:5174/jobs/${job._id}" class="button">View Job</a>
+            </div>
+          `).join('')}
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="http://localhost:5174/jobs" class="button">View All Jobs</a>
+          </div>
+          
+          <p><strong>💡 Pro Tip:</strong> Keep your profile updated to receive more relevant job recommendations!</p>
+          
+          <p>Best regards,<br>The HireHub Team</p>
+        </div>
+        <div class="footer">
+          <p>© 2024 HireHub. All rights reserved.</p>
+          <p>You can unsubscribe from these emails in your profile settings.</p>
+        </div>
+      </div>
+    </body>
+    </html>
   `
 }; 
