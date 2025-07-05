@@ -18,12 +18,25 @@ const EmailVerification = ({ email, onVerificationComplete }) => {
 
     setLoading(true);
     try {
+      // Use temporary token for verification
+      const tempToken = localStorage.getItem("tempToken");
       const response = await api.post("/auth/verify-email", {
         email,
         otp: otp.trim()
+      }, {
+        headers: {
+          Authorization: `Bearer ${tempToken}`
+        }
       });
 
       if (response.data.success) {
+        // Move from temp storage to permanent storage
+        const tempUser = JSON.parse(localStorage.getItem("tempUser"));
+        localStorage.setItem("token", tempToken);
+        localStorage.setItem("user", JSON.stringify(tempUser));
+        localStorage.removeItem("tempToken");
+        localStorage.removeItem("tempUser");
+        
         toast.success("Email verified successfully!");
         onVerificationComplete();
       }
@@ -38,7 +51,12 @@ const EmailVerification = ({ email, onVerificationComplete }) => {
   const handleResendOTP = async () => {
     setResendLoading(true);
     try {
-      const response = await api.post("/auth/resend-verification", { email });
+      const tempToken = localStorage.getItem("tempToken");
+      const response = await api.post("/auth/resend-verification", { email }, {
+        headers: {
+          Authorization: `Bearer ${tempToken}`
+        }
+      });
       
       if (response.data.success) {
         toast.success("Verification email sent successfully!");

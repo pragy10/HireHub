@@ -1,8 +1,11 @@
 import express from "express";
 import {
-    forgotPassword,
     login,
-    register,
+    logout,
+    register
+} from "../controllers/authController.js";
+import {
+    forgotPassword,
     resendVerificationEmail,
     resetPassword,
     verifyEmail
@@ -29,9 +32,6 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 
 // 📌 GET /api/auth/logout (optional, frontend just clears token)
-router.get("/logout", (req, res) => {
-  // You could blacklist token or handle on client side
-  res.status(200).json({ message: "Logged out successfully" });
-});
+router.get("/logout", logout);
 
 export default router;

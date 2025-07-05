@@ -163,6 +163,14 @@ export const resendVerificationEmail = async (req, res) => {
     // Send verification email
     const emailResult = await sendVerificationEmail(email, user.name, otp);
     if (!emailResult.success) {
+      console.error('Failed to send verification email:', emailResult.error);
+      
+      // In development, log the OTP for testing
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔑 Development OTP for resend:', otp);
+        console.log('📧 Email verification skipped in development mode');
+      }
+      
       return res.status(500).json({
         success: false,
         message: "Failed to send verification email"

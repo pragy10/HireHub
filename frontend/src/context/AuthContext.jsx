@@ -6,7 +6,7 @@ const AuthContext = createContext();
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -68,14 +68,20 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const response = await api.post("/auth/register", userData);
-      const { token, user } = response.data;
+      const { token, user, success, message } = response.data;
       
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
-      
-      toast.success("Registration successful!");
-      return { success: true };
+      if (success) {
+        // Don't set user as logged in yet since email verification is required
+        // Just store the token temporarily for the verification process
+        localStorage.setItem("tempToken", token);
+        localStorage.setItem("tempUser", JSON.stringify(user));
+        
+        toast.success(message || "Registration successful! Please check your email for verification.");
+        return { success: true };
+      } else {
+        toast.error(message || "Registration failed");
+        return { success: false, error: message };
+      }
     } catch (error) {
       const message = error.response?.data?.message || "Registration failed";
       toast.error(message);
@@ -137,6 +143,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const completeEmailVerification = () => {
+    const verifiedUser = JSON.parse(localStorage.getItem("user"));
+    if (verifiedUser) {
+      setUser(verifiedUser);
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -145,6 +158,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateProfile,
     changePassword,
+    completeEmailVerification,
     api,
   };
 

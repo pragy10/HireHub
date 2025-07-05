@@ -1,22 +1,80 @@
-import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import config from "../config.js";
+import User from "../models/User.js";
+import { generateOTP, sendVerificationEmail } from "../utils/emailService.js";
 
 const generateToken = (id, role) =>
-  jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "1d" });
+  jwt.sign({ id, role }, config.JWT_SECRET, { expiresIn: "1d" });
 
 export const register = async (req, res) => {
-  const { name, email, password, role } = req.body;
-  const existing = await User.findOne({ email });
-  if (existing) return res.status(400).json({ msg: "Email already registered" });
+  try {
+    const { name, email, password, role } = req.body;
+    
+    // Check if user already exists
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Email already registered" 
+      });
+    }
 
-  const hashed = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, password: hashed, role });
+    // Hash password
+    const hashed = await bcrypt.hash(password, 10);
 
-  res.status(201).json({
-    token: generateToken(user._id, user.role),
-    user: { id: user._id, name: user.name, email: user.email, role: user.role }
-  });
+    // Generate OTP for email verification
+    const otp = generateOTP();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    // Create user
+    const user = new User({
+      name,
+      email,
+      password: hashed,
+      role: role || "jobseeker",
+      emailVerificationOTP: otp,
+      emailVerificationExpires: otpExpires
+    });
+
+    await user.save();
+
+    // Send verification email
+    const emailResult = await sendVerificationEmail(email, name, otp);
+    if (!emailResult.success) {
+      console.error('Failed to send verification email:', emailResult.error);
+      // Don't fail registration if email sending fails
+      // User can request resend later
+      
+      // In development, log the OTP for testing
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔑 Development OTP for testing:', otp);
+        console.log('📧 Email verification skipped in development mode');
+      }
+    }
+
+    // Generate JWT token (temporary until email verification)
+    const token = generateToken(user._id, user.role);
+
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully. Please check your email for verification.",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        isEmailVerified: user.isEmailVerified
+      },
+      token
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error registering user",
+      error: error.message
+    });
+  }
 };
 
 export const login = async (req, res) => {

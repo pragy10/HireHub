@@ -5,18 +5,12 @@ import {
     getAllUsers,
     getAppliedJobs,
     getProfile,
-    login,
-    register,
     updateProfile,
     uploadResume
 } from '../controllers/userController.js';
 import { admin, protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
-
-// Public routes
-router.post('/register', register);
-router.post('/login', login);
 
 // Protected routes
 router.use(protect);

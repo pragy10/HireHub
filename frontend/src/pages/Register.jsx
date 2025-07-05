@@ -17,7 +17,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [showVerification, setShowVerification] = useState(false);
-  const { register } = useAuth();
+  const { register, completeEmailVerification } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -84,6 +84,8 @@ const Register = () => {
   };
 
   const handleVerificationComplete = () => {
+    // Complete email verification and update AuthContext
+    completeEmailVerification();
     navigate("/dashboard");
   };
 

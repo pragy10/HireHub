@@ -7,6 +7,11 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Set NODE_TLS_REJECT_UNAUTHORIZED=0 for development to handle SSL certificate issues
+if (process.env.NODE_ENV !== 'production') {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
 // Import routes
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
@@ -88,22 +93,23 @@ const startServer = async () => {
     // Start email scheduler
     scheduleDailyJobUpdates();
     
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`🚀 HireHub Server running on port ${PORT}`);
       console.log(`📊 Environment: ${config.NODE_ENV}`);
       console.log(`🌐 API URL: http://localhost:${PORT}/api`);
       console.log(`📧 Daily email updates scheduled for 9:00 AM UTC`);
     });
+
+    // Handle unhandled promise rejections
+    process.on('unhandledRejection', (err, promise) => {
+      console.log(`Error: ${err.message}`);
+      server.close(() => process.exit(1));
+    });
+
   } catch (error) {
     console.error("Error starting server:", error);
     process.exit(1);
   }
 };
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`);
-  server.close(() => process.exit(1));
-});
 
 startServer();

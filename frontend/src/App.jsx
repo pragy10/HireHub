@@ -14,7 +14,6 @@ import JobList from "./pages/JobList";
 import Login from "./pages/Login";
 import PostJob from "./pages/PostJob";
 import Profile from "./pages/Profile";
-import RecruitmentJobs from "./pages/RecruitmentJobs";
 import Register from "./pages/Register";
 
 // Protected Route Component
@@ -49,7 +48,6 @@ function AppContent() {
           <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
           <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" /> : <ForgotPassword />} />
           <Route path="/jobs" element={<JobList />} />
-          <Route path="/recruitment" element={<RecruitmentJobs />} />
           <Route path="/jobs/:id" element={<JobDetail />} />
           
           {/* Protected Routes */}

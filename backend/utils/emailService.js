@@ -4,13 +4,22 @@ import { emailTemplates } from './emailTemplates.js';
 
 // Create transporter
 const createTransporter = () => {
-  return nodemailer.createTransport({
+  const transporterConfig = {
     service: 'gmail',
     auth: {
       user: config.EMAIL_USER,
       pass: config.EMAIL_PASS
     }
-  });
+  };
+
+  // Add TLS configuration for development
+  if (process.env.NODE_ENV !== 'production') {
+    transporterConfig.tls = {
+      rejectUnauthorized: false // Accept self-signed certificates in development
+    };
+  }
+
+  return nodemailer.createTransport(transporterConfig);
 };
 
 // Generate OTP
@@ -31,10 +40,15 @@ export const sendVerificationEmail = async (email, userName, otp) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Verification email sent:', info.messageId);
+    console.log('✅ Verification email sent:', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending verification email:', error);
+    console.error('❌ Error sending verification email:', error.message);
+    console.error('Email config:', {
+      user: config.EMAIL_USER,
+      hasPassword: !!config.EMAIL_PASS,
+      environment: process.env.NODE_ENV
+    });
     return { success: false, error: error.message };
   }
 };

@@ -9,7 +9,6 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import testBackendConnection from "../test-connection.js";
 
 const Home = () => {
   const { user, api } = useAuth();
@@ -20,20 +19,13 @@ const Home = () => {
   });
   const [recentJobs, setRecentJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [backendStatus, setBackendStatus] = useState("checking");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Test backend connection first
-        const isConnected = await testBackendConnection();
-        setBackendStatus(isConnected ? "connected" : "disconnected");
-        
-        if (isConnected) {
-          // Fetch recent jobs
-          const jobsResponse = await api.get("/jobs?limit=6");
-          setRecentJobs(jobsResponse.data.jobs || []);
-        }
+        // Fetch recent jobs
+        const jobsResponse = await api.get("/jobs?limit=6");
+        setRecentJobs(jobsResponse.data.jobs || []);
         
         // For demo purposes, set some stats
         setStats({
@@ -43,7 +35,6 @@ const Home = () => {
         });
       } catch (error) {
         console.error("Error fetching data:", error);
-        setBackendStatus("error");
       } finally {
         setLoading(false);
       }
@@ -86,9 +77,6 @@ const Home = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
-          <p className="mt-2 text-sm text-gray-500">
-            Backend Status: {backendStatus}
-          </p>
         </div>
       </div>
     );
@@ -96,25 +84,6 @@ const Home = () => {
 
   return (
     <div className="fade-in">
-      {/* Backend Status Alert */}
-      {backendStatus !== "connected" && (
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm">
-                <strong>Backend Connection Issue:</strong> The backend server is not responding. 
-                Please make sure the backend is running on port 5000.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -262,10 +231,7 @@ const Home = () => {
             ) : (
               <div className="col-span-full text-center py-8">
                 <p className="text-gray-500">
-                  {backendStatus === "connected" 
-                    ? "No jobs available at the moment." 
-                    : "Unable to load jobs. Please check backend connection."
-                  }
+                  No jobs available at the moment.
                 </p>
               </div>
             )}

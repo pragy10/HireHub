@@ -54,12 +54,6 @@ const Navbar = () => {
               <FaSearch className="inline mr-1" />
               Find Jobs
             </Link>
-            <Link 
-              to="/recruitment" 
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            >
-              Recruitment
-            </Link>
             
             {user ? (
               <>
@@ -167,13 +161,6 @@ const Navbar = () => {
               >
                 <FaSearch className="inline mr-2" />
                 Find Jobs
-              </Link>
-              <Link 
-                to="/recruitment" 
-                className="block px-3 py-2 text-gray-700 hover:text-blue-600 rounded-md text-base font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Recruitment
               </Link>
               
               {user ? (
