@@ -1,6 +1,7 @@
 import { Toaster } from "react-hot-toast";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
+import DashboardLayout from "./components/DashboardLayout";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -40,62 +41,22 @@ function AppContent() {
 
   return (
     <div className="app-container">
-      <Navbar />
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
-          <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
-          <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" /> : <ForgotPassword />} />
-          <Route path="/jobs" element={<JobList />} />
-          <Route path="/jobs/:id" element={<JobDetail />} />
-          
-          {/* Protected Routes */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/profile" 
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/applied-jobs" 
-            element={
-              <ProtectedRoute allowedRoles={["jobseeker"]}>
-                <AppliedJobs />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/post-job" 
-            element={
-              <ProtectedRoute allowedRoles={["employer", "admin"]}>
-                <PostJob />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/employer-dashboard" 
-            element={
-              <ProtectedRoute allowedRoles={["employer", "admin"]}>
-                <EmployerDashboard />
-              </ProtectedRoute>
-            } 
-          />
-          
-          {/* 404 Route */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </main>
+      <Routes>
+        <Route path="/" element={<><Navbar /><Home /></>} />
+        <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <><Navbar /><Login /></>} />
+        <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <><Navbar /><Register /></>} />
+        <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" /> : <><Navbar /><ForgotPassword /></>} />
+        <Route path="/jobs" element={<><Navbar /><JobList /></>} />
+        <Route path="/jobs/:id" element={<><Navbar /><JobDetail /></>} />
+        <Route element={<DashboardLayout />}>
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/applied-jobs" element={<ProtectedRoute allowedRoles={["jobseeker"]}><AppliedJobs /></ProtectedRoute>} />
+          <Route path="/post-job" element={<ProtectedRoute allowedRoles={["employer", "admin"]}><PostJob /></ProtectedRoute>} />
+          <Route path="/employer-dashboard" element={<ProtectedRoute allowedRoles={["employer", "admin"]}><EmployerDashboard /></ProtectedRoute>} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
       <Footer />
       <Toaster position="top-right" />
     </div>

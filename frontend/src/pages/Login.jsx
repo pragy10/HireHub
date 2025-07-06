@@ -40,6 +40,32 @@ const Login = () => {
     }
   };
 
+  // Demo login functions for testing
+  const handleDemoJobseekerLogin = () => {
+    const demoUser = {
+      id: "demo-jobseeker-1",
+      name: "John Doe",
+      email: "john@demo.com",
+      role: "jobseeker"
+    };
+    localStorage.setItem("token", "demo-token-jobseeker");
+    localStorage.setItem("user", JSON.stringify(demoUser));
+    window.location.reload();
+  };
+
+  const handleDemoEmployerLogin = () => {
+    const demoUser = {
+      id: "demo-employer-1",
+      name: "Jane Smith",
+      email: "jane@demo.com",
+      role: "employer",
+      company: "TechCorp Inc."
+    };
+    localStorage.setItem("token", "demo-token-employer");
+    localStorage.setItem("user", JSON.stringify(demoUser));
+    window.location.reload();
+  };
+
   const handleVerificationComplete = () => {
     navigate("/dashboard");
   };
@@ -171,6 +197,28 @@ const Login = () => {
                 <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
                   Sign up here
                 </Link>
+              </p>
+            </div>
+
+            {/* Demo Login Buttons */}
+            <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="text-lg font-semibold text-blue-700 mb-3">Demo Login (No Backend Required)</h3>
+              <div className="space-y-3">
+                <button
+                  onClick={handleDemoJobseekerLogin}
+                  className="w-full bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
+                >
+                  🧑‍💼 Login as Job Seeker (Demo)
+                </button>
+                <button
+                  onClick={handleDemoEmployerLogin}
+                  className="w-full bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
+                >
+                  🏢 Login as Employer (Demo)
+                </button>
+              </div>
+              <p className="text-xs text-blue-600 mt-2">
+                These demo accounts let you test all features without backend connection
               </p>
             </div>
           </div>

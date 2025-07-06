@@ -1,95 +1,146 @@
-import { FaBriefcase, FaEnvelope, FaFacebook, FaLinkedin, FaMapMarkerAlt, FaPhone, FaTwitter } from "react-icons/fa";
+import { FaEnvelope, FaFacebook, FaInstagram, FaLinkedin, FaMapMarkerAlt, FaPhone, FaTwitter } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer style={{
+      background: 'linear-gradient(to right, #3b82f6, #60a5fa)',
+      color: 'white',
+      padding: '40px 20px',
+      marginTop: 'auto'
+    }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '32px'
+        }}>
           {/* Company Info */}
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <FaBriefcase className="text-blue-400 text-2xl" />
-              <span className="text-xl font-bold">HireHub</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ background: 'white', padding: '8px', borderRadius: '8px' }}>
+                <span style={{ color: '#3b82f6', fontWeight: 'bold', fontSize: '20px' }}>H</span>
+              </div>
+              <span style={{ fontSize: '24px', fontWeight: 'bold' }}>HireHub</span>
             </div>
-            <p className="text-gray-300 mb-4 max-w-md">
-              Connecting talented professionals with amazing opportunities. 
-              Find your dream job or hire the perfect candidate with HireHub.
+            <p style={{ color: '#dbeafe' }}>
+              Connecting talented professionals with amazing opportunities worldwide. Your career journey starts here.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <FaLinkedin size={20} />
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <a href="#" style={{ 
+                background: 'rgba(255,255,255,0.2)', 
+                padding: '8px', 
+                borderRadius: '8px',
+                color: 'white',
+                textDecoration: 'none'
+              }}>
+                <FaFacebook style={{ fontSize: '20px' }} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <FaTwitter size={20} />
+              <a href="#" style={{ 
+                background: 'rgba(255,255,255,0.2)', 
+                padding: '8px', 
+                borderRadius: '8px',
+                color: 'white',
+                textDecoration: 'none'
+              }}>
+                <FaTwitter style={{ fontSize: '20px' }} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <FaFacebook size={20} />
+              <a href="#" style={{ 
+                background: 'rgba(255,255,255,0.2)', 
+                padding: '8px', 
+                borderRadius: '8px',
+                color: 'white',
+                textDecoration: 'none'
+              }}>
+                <FaLinkedin style={{ fontSize: '20px' }} />
+              </a>
+              <a href="#" style={{ 
+                background: 'rgba(255,255,255,0.2)', 
+                padding: '8px', 
+                borderRadius: '8px',
+                color: 'white',
+                textDecoration: 'none'
+              }}>
+                <FaInstagram style={{ fontSize: '20px' }} />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Quick Links</h3>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <li>
-                <a href="/jobs" className="text-gray-300 hover:text-white transition-colors">
-                  Find Jobs
-                </a>
+                <Link to="/" style={{ color: '#dbeafe', textDecoration: 'none' }}>Home</Link>
               </li>
               <li>
-                <a href="/post-job" className="text-gray-300 hover:text-white transition-colors">
-                  Post a Job
-                </a>
+                <Link to="/jobs" style={{ color: '#dbeafe', textDecoration: 'none' }}>Browse Jobs</Link>
               </li>
               <li>
-                <a href="/about" className="text-gray-300 hover:text-white transition-colors">
-                  About Us
-                </a>
+                <Link to="/register" style={{ color: '#dbeafe', textDecoration: 'none' }}>Create Account</Link>
               </li>
               <li>
-                <a href="/contact" className="text-gray-300 hover:text-white transition-colors">
-                  Contact
-                </a>
+                <Link to="/login" style={{ color: '#dbeafe', textDecoration: 'none' }}>Sign In</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* For Employers */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>For Employers</h3>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <li>
+                <Link to="/post-job" style={{ color: '#dbeafe', textDecoration: 'none' }}>Post a Job</Link>
+              </li>
+              <li>
+                <Link to="/employer-dashboard" style={{ color: '#dbeafe', textDecoration: 'none' }}>Employer Dashboard</Link>
+              </li>
+              <li>
+                <a href="#" style={{ color: '#dbeafe', textDecoration: 'none' }}>Pricing Plans</a>
+              </li>
+              <li>
+                <a href="#" style={{ color: '#dbeafe', textDecoration: 'none' }}>Recruitment Tools</a>
               </li>
             </ul>
           </div>
 
           {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <FaEnvelope className="text-blue-400" />
-                <span className="text-gray-300">hirehub.off@gmail.com</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Contact Us</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <FaEnvelope style={{ color: '#bfdbfe' }} />
+                <span style={{ color: '#dbeafe' }}>support@hirehub.com</span>
               </div>
-              <div className="flex items-center space-x-3">
-                <FaPhone className="text-blue-400" />
-                <span className="text-gray-300">+1 (555) 123-4567</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <FaPhone style={{ color: '#bfdbfe' }} />
+                <span style={{ color: '#dbeafe' }}>+1 (555) 123-4567</span>
               </div>
-              <div className="flex items-center space-x-3">
-                <FaMapMarkerAlt className="text-blue-400" />
-                <span className="text-gray-300">San Francisco, CA</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <FaMapMarkerAlt style={{ color: '#bfdbfe' }} />
+                <span style={{ color: '#dbeafe' }}>123 Job Street, Career City, CC 12345</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
+        <div style={{ 
+          borderTop: '1px solid #60a5fa', 
+          marginTop: '32px', 
+          paddingTop: '32px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          alignItems: 'center'
+        }}>
+          <p style={{ color: '#dbeafe', fontSize: '14px' }}>
             © 2024 HireHub. All rights reserved.
           </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Privacy Policy
-            </a>
-            <a href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Terms of Service
-            </a>
-            <a href="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Cookie Policy
-            </a>
+          <div style={{ display: 'flex', gap: '24px' }}>
+            <a href="#" style={{ color: '#dbeafe', fontSize: '14px', textDecoration: 'none' }}>Privacy Policy</a>
+            <a href="#" style={{ color: '#dbeafe', fontSize: '14px', textDecoration: 'none' }}>Terms of Service</a>
+            <a href="#" style={{ color: '#dbeafe', fontSize: '14px', textDecoration: 'none' }}>Cookie Policy</a>
           </div>
         </div>
       </div>

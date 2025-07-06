@@ -33,6 +33,7 @@ const EmployerDashboard = () => {
       setJobs(response.data.jobs || []);
     } catch (error) {
       console.error("Error fetching employer jobs:", error);
+      toast.error("Failed to load jobs");
     } finally {
       setLoading(false);
     }
@@ -45,6 +46,7 @@ const EmployerDashboard = () => {
         toast.success("Job deleted successfully!");
         fetchEmployerJobs();
       } catch (error) {
+        console.error("Error deleting job:", error);
         toast.error("Failed to delete job");
       }
     }
@@ -60,6 +62,7 @@ const EmployerDashboard = () => {
       toast.success("Application status updated!");
       fetchEmployerJobs();
     } catch (error) {
+      console.error("Error updating application status:", error);
       toast.error("Failed to update application status");
     }
   };
@@ -126,84 +129,77 @@ const EmployerDashboard = () => {
 
   if (loading) {
     return (
-      <div className="loading">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading employer dashboard...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
+          <p className="text-blue-600 font-medium">Loading employer dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="fade-in">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Employer Dashboard</h1>
-            <p className="text-gray-600">Manage your job postings and applications</p>
-          </div>
-          <Link to="/post-job" className="btn btn-primary">
-            <FaPlus className="mr-2" />
-            Post New Job
-          </Link>
+    <div className="w-full max-w-7xl mx-auto">
+      {/* Welcome Banner */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-8 rounded-2xl mb-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">Employer Dashboard</h1>
+          <p className="text-blue-100 text-lg">Manage your job postings and applications</p>
         </div>
+        <Link to="/post-job" className="bg-white text-blue-600 px-6 py-3 rounded-lg font-bold shadow hover:bg-blue-50 transition">
+          <FaPlus className="mr-2 inline" /> Post New Job
+        </Link>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="card">
-          <div className="card-body text-center">
-            <div className="text-3xl font-bold text-blue-600 mb-2">{stats.totalJobs}</div>
-            <div className="text-gray-600">Total Jobs</div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100 flex flex-col items-center">
+          <FaBriefcase className="text-3xl text-blue-600 mb-2" />
+          <div className="text-3xl font-bold text-blue-700 mb-1">{stats.totalJobs}</div>
+          <div className="text-gray-600">Total Jobs</div>
         </div>
 
-        <div className="card">
-          <div className="card-body text-center">
-            <div className="text-3xl font-bold text-green-600 mb-2">{stats.activeJobs}</div>
-            <div className="text-gray-600">Active Jobs</div>
-          </div>
+        <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100 flex flex-col items-center">
+          <FaCheck className="text-3xl text-blue-400 mb-2" />
+          <div className="text-3xl font-bold text-blue-700 mb-1">{stats.activeJobs}</div>
+          <div className="text-gray-600">Active Jobs</div>
         </div>
 
-        <div className="card">
-          <div className="card-body text-center">
-            <div className="text-3xl font-bold text-purple-600 mb-2">{stats.totalApplications}</div>
-            <div className="text-gray-600">Total Applications</div>
-          </div>
+        <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100 flex flex-col items-center">
+          <FaUsers className="text-3xl text-blue-400 mb-2" />
+          <div className="text-3xl font-bold text-blue-700 mb-1">{stats.totalApplications}</div>
+          <div className="text-gray-600">Total Applications</div>
         </div>
 
-        <div className="card">
-          <div className="card-body text-center">
-            <div className="text-3xl font-bold text-yellow-600 mb-2">{stats.pendingApplications}</div>
-            <div className="text-gray-600">Pending Review</div>
-          </div>
+        <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100 flex flex-col items-center">
+          <FaClock className="text-3xl text-blue-400 mb-2" />
+          <div className="text-3xl font-bold text-blue-700 mb-1">{stats.pendingApplications}</div>
+          <div className="text-gray-600">Pending Review</div>
         </div>
       </div>
 
       {/* Jobs List */}
-      <div className="card">
-        <div className="card-header">
-          <h2 className="text-xl font-semibold">Your Job Postings</h2>
+      <div className="bg-white rounded-2xl shadow-lg border border-blue-100">
+        <div className="p-6 border-b border-blue-100">
+          <h2 className="text-2xl font-bold text-blue-700">Your Job Postings</h2>
         </div>
-        <div className="card-body">
+        <div className="p-6">
           {jobs.length > 0 ? (
             <div className="space-y-6">
               {jobs.map((job) => (
-                <div key={job._id} className="border border-gray-200 rounded-lg p-6">
+                <div key={job._id} className="border border-blue-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-semibold text-gray-900">{job.title}</h3>
-                        <span className={`badge ${job.isActive ? 'badge-success' : 'badge-danger'}`}>
+                        <h3 className="text-xl font-semibold text-blue-900">{job.title}</h3>
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${job.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                           {job.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
                       
-                      <p className="text-gray-600 mb-3">{job.company}</p>
+                      <p className="text-blue-600 mb-3">{job.company}</p>
                       
-                      <div className="flex items-center gap-6 text-sm text-gray-500 mb-4">
+                      <div className="flex items-center gap-6 text-sm text-blue-500 mb-4">
                         <span className="flex items-center gap-1">
                           <FaMapMarkerAlt />
                           {job.location}
@@ -223,15 +219,15 @@ const EmployerDashboard = () => {
                       </div>
 
                       {job.salary && (
-                        <div className="text-green-600 font-semibold mb-4">
+                        <div className="text-blue-600 font-semibold mb-4">
                           ${job.salary.min?.toLocaleString()} - ${job.salary.max?.toLocaleString()}
                         </div>
                       )}
 
                       {/* Applications Summary */}
-                      <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                      <div className="bg-blue-50 p-4 rounded-lg mb-4">
                         <div className="flex justify-between items-center mb-2">
-                          <h4 className="font-semibold text-gray-900">
+                          <h4 className="font-semibold text-blue-900">
                             Applications ({job.applications?.length || 0})
                           </h4>
                           <button
@@ -265,24 +261,21 @@ const EmployerDashboard = () => {
                     <div className="flex flex-col gap-2">
                       <Link 
                         to={`/jobs/${job._id}`} 
-                        className="btn btn-outline btn-sm"
+                        className="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition"
                       >
-                        <FaEye className="mr-1" />
-                        View
+                        <FaEye className="mr-1 inline" /> View
                       </Link>
                       <Link 
                         to={`/jobs/${job._id}/edit`} 
-                        className="btn btn-outline btn-sm"
+                        className="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition"
                       >
-                        <FaEdit className="mr-1" />
-                        Edit
+                        <FaEdit className="mr-1 inline" /> Edit
                       </Link>
                       <button
                         onClick={() => handleDeleteJob(job._id)}
-                        className="btn btn-danger btn-sm"
+                        className="bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition"
                       >
-                        <FaTrash className="mr-1" />
-                        Delete
+                        <FaTrash className="mr-1 inline" /> Delete
                       </button>
                     </div>
                   </div>
@@ -291,14 +284,13 @@ const EmployerDashboard = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <FaBriefcase className="text-6xl text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No job postings yet</h3>
-              <p className="text-gray-600 mb-4">
+              <FaBriefcase className="text-6xl text-blue-200 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-blue-700 mb-2">No job postings yet</h3>
+              <p className="text-blue-400 mb-4">
                 Start posting jobs to attract talented candidates to your company.
               </p>
-              <Link to="/post-job" className="btn btn-primary">
-                <FaPlus className="mr-2" />
-                Post Your First Job
+              <Link to="/post-job" className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold shadow hover:bg-blue-700 transition">
+                <FaPlus className="mr-2 inline" /> Post Your First Job
               </Link>
             </div>
           )}
@@ -308,10 +300,10 @@ const EmployerDashboard = () => {
       {/* Applications Modal */}
       {showApplications && selectedJob && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="card-header">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="p-6 border-b border-blue-100">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">
+                <h3 className="text-xl font-bold text-blue-700">
                   Applications for {selectedJob.title}
                 </h3>
                 <button
@@ -319,29 +311,29 @@ const EmployerDashboard = () => {
                     setShowApplications(false);
                     setSelectedJob(null);
                   }}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-blue-400 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition"
                 >
                   <FaTimes />
                 </button>
               </div>
             </div>
-            <div className="card-body">
+            <div className="p-6">
               {selectedJob.applications && selectedJob.applications.length > 0 ? (
                 <div className="space-y-4">
                   {selectedJob.applications.map((application) => (
-                    <div key={application._id} className="border border-gray-200 rounded-lg p-4">
+                    <div key={application._id} className="border border-blue-200 rounded-xl p-4 hover:shadow-md transition">
                       <div className="flex justify-between items-start mb-3">
                         <div>
-                          <h4 className="font-semibold text-gray-900">
+                          <h4 className="font-semibold text-blue-900">
                             {application.applicant?.name}
                           </h4>
-                          <p className="text-gray-600">{application.applicant?.email}</p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-blue-600">{application.applicant?.email}</p>
+                          <p className="text-sm text-blue-400">
                             Applied {new Date(application.appliedAt).toLocaleDateString()}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className={`badge ${getStatusColor(application.status)}`}>
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(application.status)}`}>
                             {getStatusIcon(application.status)}
                             <span className="ml-1">{getStatusText(application.status)}</span>
                           </span>
@@ -350,8 +342,8 @@ const EmployerDashboard = () => {
 
                       {application.coverLetter && (
                         <div className="mb-3">
-                          <h5 className="font-medium text-gray-900 mb-1">Cover Letter:</h5>
-                          <p className="text-gray-700 text-sm">{application.coverLetter}</p>
+                          <h5 className="font-medium text-blue-900 mb-1">Cover Letter:</h5>
+                          <p className="text-blue-700 text-sm">{application.coverLetter}</p>
                         </div>
                       )}
 
@@ -363,7 +355,7 @@ const EmployerDashboard = () => {
                             application._id, 
                             e.target.value
                           )}
-                          className="form-input form-select text-sm"
+                          className="px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm"
                         >
                           <option value="pending">Pending</option>
                           <option value="reviewed">Reviewed</option>
@@ -377,8 +369,8 @@ const EmployerDashboard = () => {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <FaUsers className="text-4xl text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">No applications yet for this job posting.</p>
+                  <FaUsers className="text-4xl text-blue-200 mx-auto mb-4" />
+                  <p className="text-blue-400">No applications yet for this job posting.</p>
                 </div>
               )}
             </div>
@@ -387,21 +379,21 @@ const EmployerDashboard = () => {
       )}
 
       {/* Tips Section */}
-      <div className="mt-8 card">
-        <div className="card-header">
-          <h2 className="text-xl font-semibold">Employer Tips</h2>
+      <div className="mt-8 bg-white rounded-2xl shadow-lg border border-blue-100">
+        <div className="p-6 border-b border-blue-100">
+          <h2 className="text-2xl font-bold text-blue-700">Employer Tips</h2>
         </div>
-        <div className="card-body">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-blue-50 rounded-lg">
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
               <h3 className="font-semibold text-blue-900 mb-2">Respond Quickly</h3>
               <p className="text-blue-800 text-sm">
                 Respond to applications within 24-48 hours to maintain candidate interest and improve your company's reputation.
               </p>
             </div>
-            <div className="p-4 bg-green-50 rounded-lg">
-              <h3 className="font-semibold text-green-900 mb-2">Write Clear Job Descriptions</h3>
-              <p className="text-green-800 text-sm">
+            <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
+              <h3 className="font-semibold text-blue-900 mb-2">Write Clear Job Descriptions</h3>
+              <p className="text-blue-800 text-sm">
                 Detailed and accurate job descriptions attract more qualified candidates and reduce application volume from unqualified applicants.
               </p>
             </div>

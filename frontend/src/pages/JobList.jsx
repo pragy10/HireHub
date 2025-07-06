@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const JobList = () => {
-  const { user, api } = useAuth();
+  const { api } = useAuth();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -49,7 +49,7 @@ const JobList = () => {
         limit: 12,
         sortBy,
         sortOrder,
-        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value))
+        ...Object.fromEntries(Object.entries(filters).filter(([, value]) => value))
       });
 
       const response = await api.get(`/jobs?${params}`);
@@ -62,6 +62,83 @@ const JobList = () => {
     } catch (error) {
       console.error("Error fetching jobs:", error);
       toast.error("Failed to load jobs");
+      
+      // Show demo jobs when API fails
+      const demoJobs = [
+        {
+          _id: "demo-job-1",
+          title: "Senior React Developer",
+          company: "TechCorp Inc.",
+          location: "San Francisco, CA",
+          jobType: "full-time",
+          experienceLevel: "senior",
+          salary: { min: 120000, max: 180000, period: "year" },
+          skills: ["React", "JavaScript", "TypeScript"],
+          createdAt: new Date().toISOString()
+        },
+        {
+          _id: "demo-job-2",
+          title: "Product Manager",
+          company: "Innovation Labs",
+          location: "New York, NY",
+          jobType: "full-time",
+          experienceLevel: "mid",
+          salary: { min: 90000, max: 140000, period: "year" },
+          skills: ["Product Management", "Agile", "Analytics"],
+          createdAt: new Date().toISOString()
+        },
+        {
+          _id: "demo-job-3",
+          title: "UX Designer",
+          company: "Creative Studio",
+          location: "Remote",
+          jobType: "contract",
+          experienceLevel: "senior",
+          salary: { min: 80000, max: 120000, period: "year" },
+          skills: ["Figma", "User Research", "Prototyping"],
+          createdAt: new Date().toISOString()
+        },
+        {
+          _id: "demo-job-4",
+          title: "DevOps Engineer",
+          company: "Cloud Solutions",
+          location: "Austin, TX",
+          jobType: "full-time",
+          experienceLevel: "mid",
+          salary: { min: 100000, max: 150000, period: "year" },
+          skills: ["AWS", "Docker", "Kubernetes"],
+          createdAt: new Date().toISOString()
+        },
+        {
+          _id: "demo-job-5",
+          title: "Data Scientist",
+          company: "AI Research",
+          location: "Boston, MA",
+          jobType: "full-time",
+          experienceLevel: "senior",
+          salary: { min: 130000, max: 200000, period: "year" },
+          skills: ["Python", "Machine Learning", "SQL"],
+          createdAt: new Date().toISOString()
+        },
+        {
+          _id: "demo-job-6",
+          title: "Frontend Developer",
+          company: "StartupXYZ",
+          location: "Remote",
+          jobType: "full-time",
+          experienceLevel: "entry",
+          salary: { min: 60000, max: 90000, period: "year" },
+          skills: ["HTML", "CSS", "JavaScript"],
+          createdAt: new Date().toISOString()
+        }
+      ];
+      
+      setJobs(demoJobs);
+      setPagination({
+        currentPage: 1,
+        totalPages: 1,
+        total: demoJobs.length
+      });
     } finally {
       setLoading(false);
     }
@@ -123,19 +200,19 @@ const JobList = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading job opportunities...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
+          <p className="text-blue-600 font-medium">Loading job opportunities...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-16">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -147,13 +224,13 @@ const JobList = () => {
             
             {/* Search Bar */}
             <div className="relative max-w-2xl mx-auto">
-              <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
+              <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400 text-xl" />
               <input
                 type="text"
                 placeholder="Search jobs, companies, or keywords..."
                 value={filters.search}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
-                className="w-full pl-12 pr-4 py-4 rounded-full text-gray-800 text-lg focus:outline-none focus:ring-4 focus:ring-blue-300"
+                className="w-full pl-12 pr-4 py-4 rounded-full text-blue-800 text-lg focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg"
               />
             </div>
           </div>
@@ -162,25 +239,25 @@ const JobList = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 text-center shadow-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-2xl p-6 text-center shadow-lg border border-blue-100">
             <div className="text-3xl font-bold text-blue-600 mb-2">{pagination.total}</div>
             <div className="text-gray-600">Total Jobs</div>
           </div>
-          <div className="bg-white rounded-xl p-6 text-center shadow-lg">
-            <div className="text-3xl font-bold text-green-600 mb-2">
+          <div className="bg-white rounded-2xl p-6 text-center shadow-lg border border-blue-100">
+            <div className="text-3xl font-bold text-blue-600 mb-2">
               {jobs.filter(job => job.jobType === "full-time").length}
             </div>
             <div className="text-gray-600">Full-time</div>
           </div>
-          <div className="bg-white rounded-xl p-6 text-center shadow-lg">
-            <div className="text-3xl font-bold text-purple-600 mb-2">
+          <div className="bg-white rounded-2xl p-6 text-center shadow-lg border border-blue-100">
+            <div className="text-3xl font-bold text-blue-600 mb-2">
               {new Set(jobs.map(job => job.company)).size}
             </div>
             <div className="text-gray-600">Companies</div>
           </div>
-          <div className="bg-white rounded-xl p-6 text-center shadow-lg">
-            <div className="text-3xl font-bold text-orange-600 mb-2">
+          <div className="bg-white rounded-2xl p-6 text-center shadow-lg border border-blue-100">
+            <div className="text-3xl font-bold text-blue-600 mb-2">
               {jobs.filter(job => job.jobType === "remote" || job.location.toLowerCase().includes("remote")).length}
             </div>
             <div className="text-gray-600">Remote</div>
@@ -188,9 +265,9 @@ const JobList = () => {
         </div>
 
         {/* Filters Section */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">Advanced Filters</h2>
+            <h2 className="text-2xl font-bold text-blue-700">Advanced Filters</h2>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowFilters(!showFilters)}
@@ -210,24 +287,24 @@ const JobList = () => {
           </div>
 
           {showFilters && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-blue-100">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                <label className="block text-sm font-medium text-blue-700 mb-2">Location</label>
                 <input
                   type="text"
                   placeholder="City, State, or Remote"
                   value={filters.location}
                   onChange={(e) => handleFilterChange("location", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
+                <label className="block text-sm font-medium text-blue-700 mb-2">Job Type</label>
                 <select
                   value={filters.jobType}
                   onChange={(e) => handleFilterChange("jobType", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                 >
                   <option value="">All Types</option>
                   {jobTypes.map(type => (
@@ -239,11 +316,11 @@ const JobList = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Experience Level</label>
+                <label className="block text-sm font-medium text-blue-700 mb-2">Experience Level</label>
                 <select
                   value={filters.experienceLevel}
                   onChange={(e) => handleFilterChange("experienceLevel", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                 >
                   <option value="">All Levels</option>
                   {experienceLevels.map(level => (
@@ -255,21 +332,21 @@ const JobList = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Salary Range</label>
+                <label className="block text-sm font-medium text-blue-700 mb-2">Salary Range</label>
                 <div className="flex gap-2">
                   <input
                     type="number"
                     placeholder="Min"
                     value={filters.minSalary}
                     onChange={(e) => handleFilterChange("minSalary", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                   <input
                     type="number"
                     placeholder="Max"
                     value={filters.maxSalary}
                     onChange={(e) => handleFilterChange("maxSalary", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -277,13 +354,13 @@ const JobList = () => {
           )}
 
           {/* Sort Options */}
-          <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
+          <div className="flex items-center justify-between mt-6 pt-6 border-t border-blue-100">
             <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-gray-700">Sort by:</span>
+              <span className="text-sm font-medium text-blue-700">Sort by:</span>
               <button
                 onClick={() => handleSort("createdAt")}
                 className={`text-sm px-3 py-1 rounded-md transition-colors ${
-                  sortBy === "createdAt" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
+                  sortBy === "createdAt" ? "bg-blue-100 text-blue-700" : "text-blue-600 hover:bg-blue-50"
                 }`}
               >
                 Date {sortBy === "createdAt" && (sortOrder === "asc" ? "↑" : "↓")}
@@ -291,13 +368,13 @@ const JobList = () => {
               <button
                 onClick={() => handleSort("salary.min")}
                 className={`text-sm px-3 py-1 rounded-md transition-colors ${
-                  sortBy === "salary.min" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
+                  sortBy === "salary.min" ? "bg-blue-100 text-blue-700" : "text-blue-600 hover:bg-blue-50"
                 }`}
               >
                 Salary {sortBy === "salary.min" && (sortOrder === "asc" ? "↑" : "↓")}
               </button>
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-blue-600">
               Showing {jobs.length} of {pagination.total} jobs
             </div>
           </div>
@@ -306,21 +383,21 @@ const JobList = () => {
         {/* Jobs Grid */}
         {jobs.length === 0 ? (
           <div className="text-center py-12">
-            <FaBriefcase className="text-6xl text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">No jobs found</h3>
-            <p className="text-gray-500">Try adjusting your filters or search terms</p>
+            <FaBriefcase className="text-6xl text-blue-200 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-blue-700 mb-2">No jobs found</h3>
+            <p className="text-blue-400">Try adjusting your filters or search terms</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {jobs.map((job) => (
-              <div key={job._id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+              <div key={job._id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-blue-100">
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+                      <h3 className="text-lg font-semibold text-blue-900 mb-2 hover:text-blue-600 transition-colors">
                         <Link to={`/jobs/${job._id}`}>{job.title}</Link>
                       </h3>
-                      <p className="text-gray-600 font-medium">{job.company}</p>
+                      <p className="text-blue-600 font-medium">{job.company}</p>
                     </div>
                     <div className="flex flex-col items-end">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getJobTypeColor(job.jobType)}`}>
@@ -335,30 +412,30 @@ const JobList = () => {
                   </div>
 
                   <div className="space-y-3 mb-4">
-                    <div className="flex items-center text-gray-600">
-                      <FaMapMarkerAlt className="mr-2 text-gray-400" />
+                    <div className="flex items-center text-blue-600">
+                      <FaMapMarkerAlt className="mr-2 text-blue-400" />
                       <span>{job.location}</span>
                     </div>
                     
                     {job.salary && (
-                      <div className="flex items-center text-gray-600">
-                        <FaMoneyBillWave className="mr-2 text-gray-400" />
+                      <div className="flex items-center text-blue-600">
+                        <FaMoneyBillWave className="mr-2 text-blue-400" />
                         <span>{formatSalary(job.salary)}</span>
                       </div>
                     )}
                     
-                    <div className="flex items-center text-gray-600">
-                      <FaClock className="mr-2 text-gray-400" />
+                    <div className="flex items-center text-blue-600">
+                      <FaClock className="mr-2 text-blue-400" />
                       <span>{new Date(job.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
 
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                  <p className="text-blue-700 text-sm mb-4 line-clamp-3">
                     {job.description?.substring(0, 150)}...
                   </p>
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center text-gray-500 text-sm">
+                    <div className="flex items-center text-blue-500 text-sm">
                       <FaStar className="text-yellow-400 mr-1" />
                       <span>{job.views || 0} views</span>
                     </div>
@@ -382,7 +459,7 @@ const JobList = () => {
               <button
                 onClick={() => setPagination(prev => ({ ...prev, currentPage: Math.max(1, prev.currentPage - 1) }))}
                 disabled={pagination.currentPage === 1}
-                className="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 border border-blue-200 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
@@ -393,10 +470,10 @@ const JobList = () => {
                   <button
                     key={page}
                     onClick={() => setPagination(prev => ({ ...prev, currentPage: page }))}
-                    className={`px-3 py-2 border rounded-md text-sm font-medium ${
+                    className={`px-3 py-2 border rounded-lg text-sm font-medium ${
                       pagination.currentPage === page
                         ? "bg-blue-600 text-white border-blue-600"
-                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                        : "border-blue-200 text-blue-700 hover:bg-blue-50"
                     }`}
                   >
                     {page}
@@ -407,7 +484,7 @@ const JobList = () => {
               <button
                 onClick={() => setPagination(prev => ({ ...prev, currentPage: Math.min(pagination.totalPages, prev.currentPage + 1) }))}
                 disabled={pagination.currentPage === pagination.totalPages}
-                className="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 border border-blue-200 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>

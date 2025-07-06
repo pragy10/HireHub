@@ -27,9 +27,13 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
+      const token = localStorage.getItem("token");
+      // Don't redirect demo users
+      if (!token || !token.startsWith("demo-token")) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+      }
     } else if (error.code === 'ECONNREFUSED' || error.message.includes('Network Error')) {
       console.error('Backend connection failed:', error.message);
       toast.error('Unable to connect to server. Please check if backend is running.');
@@ -49,7 +53,15 @@ export const AuthProvider = ({ children }) => {
       
       if (token && userData) {
         try {
-          setUser(JSON.parse(userData));
+          const user = JSON.parse(userData);
+          setUser(user);
+          
+          // Skip API validation for demo tokens
+          if (token.startsWith("demo-token")) {
+            setLoading(false);
+            return;
+          }
+          
           // Verify token is still valid
           await api.get("/users/profile");
         } catch (error) {

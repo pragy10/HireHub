@@ -18,10 +18,6 @@ const AppliedJobs = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
 
-  useEffect(() => {
-    fetchAppliedJobs();
-  }, []);
-
   const fetchAppliedJobs = async () => {
     try {
       const response = await api.get("/users/applied-jobs");
@@ -32,6 +28,10 @@ const AppliedJobs = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchAppliedJobs();
+  }, [fetchAppliedJobs]);
 
   const getStatusIcon = (status) => {
     switch (status) {
