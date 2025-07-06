@@ -24,7 +24,14 @@ const userSchema = new mongoose.Schema({
   bio: String,
   
   // For job seekers
-  resume: String,
+  resume: {
+    filename: String,
+    originalName: String,
+    size: Number,
+    mimetype: String,
+    url: String,
+    uploadedAt: Date
+  },
   skills: [String],
   experience: [{
     title: String,

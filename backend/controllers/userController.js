@@ -1,8 +1,16 @@
 import bcrypt from "bcryptjs";
+import cloudinary from 'cloudinary';
+import fs from 'fs';
 import jwt from "jsonwebtoken";
 import config from "../config.js";
 import User from "../models/User.js";
 import { generateOTP, sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail } from "../utils/emailService.js";
+
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, config.JWT_SECRET, { expiresIn: "1d" });
@@ -11,7 +19,7 @@ const generateToken = (id, role) => {
 // Register user with email verification
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+  const { name, email, password, role } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -52,7 +60,7 @@ export const register = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       config.JWT_SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: "30m" }
     );
 
     res.status(201).json({
@@ -261,7 +269,7 @@ export const resetPassword = async (req, res) => {
     }
 
     // Hash new password
-    const salt = await bcrypt.genSalt(10);
+  const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
     // Update password and clear OTP
@@ -286,10 +294,10 @@ export const resetPassword = async (req, res) => {
 // Login user
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
     // Check if user exists
-    const user = await User.findOne({ email });
+  const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -480,21 +488,52 @@ export const uploadResume = async (req, res) => {
     }
 
     const resumeFile = req.files.resume;
-    
-    // Here you would typically upload to cloud storage (AWS S3, Cloudinary, etc.)
-    // For now, we'll just store the filename
-    const resumeUrl = `/uploads/resumes/${resumeFile.name}`;
-
-    await User.findByIdAndUpdate(req.user.id, {
-      resume: resumeUrl
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(resumeFile.mimetype)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid file type. Only PDF, DOC, and DOCX files are allowed."
+      });
+    }
+    // Validate file size (5MB)
+    if (resumeFile.size > 5 * 1024 * 1024) {
+      return res.status(400).json({
+        success: false,
+        message: "File size too large. Maximum size is 5MB."
+      });
+    }
+    // Save file temporarily
+    const tempPath = `./uploads/${Date.now()}_${resumeFile.name}`;
+    await resumeFile.mv(tempPath);
+    // Upload to Cloudinary
+    const result = await cloudinary.v2.uploader.upload(tempPath, {
+      folder: 'hirehub-resumes',
+      resource_type: 'raw',
+      use_filename: true,
+      unique_filename: false
     });
-
+    // Remove temp file
+    fs.unlinkSync(tempPath);
+    // Store file information in database
+    const resumeData = {
+      filename: resumeFile.name,
+      size: resumeFile.size,
+      mimetype: resumeFile.mimetype,
+      url: result.secure_url,
+      cloudinary_id: result.public_id,
+      uploadedAt: new Date()
+    };
+    await User.findByIdAndUpdate(req.user.id, {
+      resume: resumeData
+    });
     res.status(200).json({
       success: true,
       message: "Resume uploaded successfully",
-      resumeUrl
+      resume: resumeData
     });
   } catch (error) {
+    console.error("Error uploading resume:", error);
     res.status(500).json({
       success: false,
       message: "Error uploading resume",
