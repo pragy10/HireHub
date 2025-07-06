@@ -13,7 +13,7 @@ A modern, full-stack job portal built with the MERN stack (MongoDB, Express.js, 
 1. **Start Backend:**
    ```bash
    cd backend
-   npm start
+   nodemon server.js
    ```
    
 2. **Start Frontend (in a new terminal):**
@@ -55,7 +55,7 @@ A modern, full-stack job portal built with the MERN stack (MongoDB, Express.js, 
 
 4. **Start the server:**
    ```bash
-   npm start
+   nodemon server.js
    ```
 
 ### 2. Frontend Setup
